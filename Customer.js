@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: 'root',
     password: 'Jud43R1ch!',
-    database: 'bamazonDB'
+    database: 'BamazonDB'
 });
 var itemArray = [];
 
@@ -39,7 +39,7 @@ function askUser(){
         {
             type: 'input',
             name: 'itemChoice',
-            message: 'Please enter ID of the item you wish to purchase.'
+            message: 'What are you looking to buy?'
         },
         {
             type: 'input',
@@ -56,15 +56,15 @@ function askUser(){
             }else {
                 productData = response[0];
                 if (productData.stock_quantity > quantity){
-                    console.log(`Good ${productData.product_name} plenty more!`)
+                    console.log(`Good in stock ${productData.product_name} we have plenty more!`)
                     var newTotal = productData.stock_quantity - quantity
                     var price = quantity*productData.price
                     connection.query(`UPDATE products SET stock_quantity = ${newTotal} WHERE item_id = ${item}`, function(error, response){
                         if (error){
-                            console.log("Quantity update failed.");
+                            console.log("Sorry out of stock.");
                             return;
                         }else{
-                            console.log(`Your total cost is $${price}.`)
+                            console.log(`The total cost will be $${price}.`)
                             var newSales = productData.product_sales + price
                             connection.query(`UPDATE products SET product_sales = ${newSales} WHERE item_id = ${item}`, function(error, response){
                                 if (error){
@@ -77,7 +77,7 @@ function askUser(){
                          }
                     })
                 }else{
-                    console.log(`We apologize, but we only have ${productData.stock_quantity} in stock!`)
+                    console.log(`We do not currently have enough ${productData.stock_quantity} in stock!`)
                     askUser();
                 }
             }
